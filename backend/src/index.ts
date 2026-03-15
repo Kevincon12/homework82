@@ -15,6 +15,7 @@ app.use(express.json());
 app.use("/artists", artistsRouter);
 app.use("/albums", albumsRouter);
 app.use("/tracks", tracksRouter);
+app.use("/uploads", express.static("uploads"));
 
 mongoose.connect("mongodb://127.0.0.1:27017/music-api");
 
