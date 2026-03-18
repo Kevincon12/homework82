@@ -5,6 +5,8 @@ import cors from "cors";
 import artistsRouter from "./routes/artists";
 import albumsRouter from "./routes/albums";
 import tracksRouter from "./routes/tracks";
+import usersRouter from "./routes/users";
+import trackHistoryRouter from "./routes/trackHistory";
 
 const app = express();
 const port = 8000;
@@ -16,6 +18,8 @@ app.use("/artists", artistsRouter);
 app.use("/albums", albumsRouter);
 app.use("/tracks", tracksRouter);
 app.use("/uploads", express.static("uploads"));
+app.use('/users', usersRouter);
+app.use('/track-history', trackHistoryRouter);
 
 mongoose.connect("mongodb://127.0.0.1:27017/music-api");
 
