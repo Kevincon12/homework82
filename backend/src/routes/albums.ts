@@ -21,11 +21,17 @@ router.get("/", async (req, res) => {
     try {
         const { artist } = req.query;
         let albums;
+
         if (artist) {
-            albums = await Album.find({ artist }).populate("artist");
+            albums = await Album.find({ artist })
+                .sort({ year: -1 })
+                .populate("artist");
         } else {
-            albums = await Album.find().populate("artist");
+            albums = await Album.find()
+                .sort({ year: -1 })
+                .populate("artist");
         }
+
         res.send(albums);
     } catch (error) {
         console.log(error);

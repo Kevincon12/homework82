@@ -9,10 +9,12 @@ router.get("/", async (req, res) => {
         const filter: any = {};
         if (album) filter.album = album;
 
-        const tracks = await Track.find(filter).populate({
-            path: "album",
-            populate: { path: "artist" }
-        });
+        const tracks = await Track.find(filter)
+            .sort({ number: 1 })
+            .populate({
+                path: "album",
+                populate: { path: "artist" }
+            });
 
         res.send(tracks);
     } catch (error) {
@@ -23,12 +25,13 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
     try {
-        const { title, album, duration } = req.body;
+        const { title, album, duration, number } = req.body;
 
         const track = new Track({
             title,
             album,
-            duration
+            duration,
+            number
         });
 
         await track.save();
