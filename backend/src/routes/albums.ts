@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import multer from "multer";
 import Album from "../models/Album";
+import type { AlbumWithArtistName } from "../types";
 
 const router = express.Router();
 
@@ -20,19 +21,23 @@ const upload = multer({ storage });
 router.get("/", async (req, res) => {
     try {
         const { artist } = req.query;
-        let albums;
 
-        if (artist) {
-            albums = await Album.find({ artist })
-                .sort({ year: -1 })
-                .populate("artist");
-        } else {
-            albums = await Album.find()
-                .sort({ year: -1 })
-                .populate("artist");
-        }
+        let albums = await Album.find(artist ? { artist } : {})
+            .sort({ year: -1 })
+            .populate("artist", "name");
 
-        res.send(albums);
+        const albumsWithArtistName: AlbumWithArtistName[] = albums.map(album => ({
+            _id: album._id.toString(),
+            title: album.title,
+            year: album.year,
+            cover: album.cover,
+            artist: {
+                _id: (album.artist as any)?._id?.toString() || "",
+                name: (album.artist as any)?.name || ""
+            }
+        }));
+
+        res.send(albumsWithArtistName);
     } catch (error) {
         console.log(error);
         res.status(500).send({ error: "Server error" });
@@ -61,9 +66,21 @@ router.post("/", upload.single("cover"), async (req, res) => {
 
 router.get("/:id", async (req, res) => {
     try {
-        const album = await Album.findById(req.params.id).populate("artist");
+        const album = await Album.findById(req.params.id).populate("artist", "name");
         if (!album) return res.status(404).send({ error: "Album not found" });
-        res.send(album);
+
+        const albumWithArtistName: AlbumWithArtistName = {
+            _id: album._id.toString(),
+            title: album.title,
+            year: album.year,
+            cover: album.cover,
+            artist: {
+                _id: (album.artist as any)?._id?.toString() || "",
+                name: (album.artist as any)?.name || ""
+            }
+        };
+
+        res.send(albumWithArtistName);
     } catch (error) {
         console.log(error);
         res.status(500).send({ error: "Server error" });

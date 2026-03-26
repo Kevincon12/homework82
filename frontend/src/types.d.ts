@@ -7,16 +7,17 @@ export interface Artist {
 }
 
 export interface Album {
-    _id: string
-    title: string
-    year: number
-    cover?: string
-    artist: Artist
+    _id: string;
+    title: string;
+    year: number;
+    cover: string;
+    artist: string;
+    artistName?: string;
 }
 
 export interface Track {
-    _id: string
-    title: string
-    duration: string
-    number: number
+    _id: string;
+    title: string;
+    duration: string;
+    number: number;
 }

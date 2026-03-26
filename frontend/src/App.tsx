@@ -1,6 +1,7 @@
 import { Routes, Route, Link } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Container } from '@mui/material';
 import ArtistsPage from "./routes/ArtistsPage";
+import AlbumsPage from "./routes/AlbumsPage.tsx";
 
 const App = () => (
     <>
@@ -18,7 +19,7 @@ const App = () => (
         <Container sx={{ mt: 3 }}>
             <Routes>
                 <Route path="/" element={<ArtistsPage />} />
-                {/* Маршруты для альбомов и треков потома сюды */}
+                <Route path="/albums/:id" element={<AlbumsPage />} />
             </Routes>
         </Container>
     </>

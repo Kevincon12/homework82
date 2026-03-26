@@ -7,10 +7,12 @@ import CardMedia from '@mui/material/CardMedia';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import { useNavigate } from 'react-router-dom';
 
 const ArtistsPage = () => {
     const dispatch = useDispatch<AppDispatch>();
     const artists = useSelector((state: RootState) => state.artists.items);
+    const navigate = useNavigate();
 
     useEffect(() => {
         dispatch(fetchArtists());
@@ -32,16 +34,17 @@ const ArtistsPage = () => {
                 {artists.map((artist) => (
                     <Card
                         key={artist._id}
-                        sx={{
-                            width: 250,
-                            display: 'flex',
-                            flexDirection: 'column',
-                        }}
+                        sx={{ width: 250, display: 'flex', flexDirection: 'column', cursor: 'pointer' }}
+                        onClick={() => navigate(`/albums/${artist._id}`)}
                     >
                         <CardMedia
                             component="img"
                             height="140"
-                            image={artist.photo ? `http://localhost:8000/uploads/artists/${artist.photo}` : 'https://t3.ftcdn.net/jpg/10/22/24/80/360_F_1022248039_7LDxHRi3Mlt9BK3wzLBUGZp9XAO1gt2s.jpg'}
+                            image={
+                                artist.photo
+                                    ? `http://localhost:8000/uploads/artists/${artist.photo}`
+                                    : 'https://t3.ftcdn.net/jpg/10/22/24/80/360_F_1022248039_7LDxHRi3Mlt9BK3wzLBUGZp9XAO1gt2s.jpg'
+                            }
                             alt={artist.name}
                         />
                         <CardContent>

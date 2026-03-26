@@ -3,3 +3,14 @@ export interface UserFields {
     password: string;
     token: string;
 }
+
+export interface AlbumWithArtistName {
+    _id: string;
+    title: string;
+    year: number;
+    cover?: string;
+    artist: {
+        _id: string;
+        name: string;
+    };
+}
