@@ -2,6 +2,7 @@ import { Routes, Route, Link } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Container } from '@mui/material';
 import ArtistsPage from "./routes/ArtistsPage";
 import AlbumsPage from "./routes/AlbumsPage.tsx";
+import TracksPage from "./routes/TracksPage.tsx";
 
 const App = () => (
     <>
@@ -20,6 +21,7 @@ const App = () => (
             <Routes>
                 <Route path="/" element={<ArtistsPage />} />
                 <Route path="/albums/:id" element={<AlbumsPage />} />
+                <Route path="/album/:id" element={<TracksPage />} />
             </Routes>
         </Container>
     </>

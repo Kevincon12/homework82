@@ -5,16 +5,11 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
     try {
-        const { album } = req.query;
-        const filter: any = {};
-        if (album) filter.album = album;
+        const { albumId } = req.query;
+        if (!albumId) return res.status(400).send({ error: "albumId is required" });
 
-        const tracks = await Track.find(filter)
-            .sort({ number: 1 })
-            .populate({
-                path: "album",
-                populate: { path: "artist" }
-            });
+        const tracks = await Track.find({ album: albumId })
+            .sort({ number: 1 });
 
         res.send(tracks);
     } catch (error) {
@@ -44,13 +39,8 @@ router.post("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
     try {
-        const track = await Track.findById(req.params.id).populate({
-            path: "album",
-            populate: { path: "artist" }
-        });
-
+        const track = await Track.findById(req.params.id);
         if (!track) return res.status(404).send({ error: "Track not found" });
-
         res.send(track);
     } catch (error) {
         console.log(error);
