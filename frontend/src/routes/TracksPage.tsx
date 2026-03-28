@@ -1,15 +1,16 @@
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { fetchTracksByAlbum } from '../features/tracks/tracksSlice';
-import type { AppDispatch, RootState } from '../app/store';
-import { Card, CardContent, Typography, Box } from '@mui/material';
+import { addTrackHistory } from '../features/trackHistory/trackHistorySlice';
+import { Card, CardContent, Typography, Box, Button } from '@mui/material';
 
-const AlbumDetailPage = () => {
+const TracksPage = () => {
     const { id } = useParams<{ id: string }>();
-    const dispatch = useDispatch<AppDispatch>();
-    const tracks = useSelector((state: RootState) => state.tracks.items);
-    const loading = useSelector((state: RootState) => state.tracks.loading);
+    const dispatch = useAppDispatch();
+    const tracks = useAppSelector(state => state.tracks.items);
+    const loading = useAppSelector(state => state.tracks.loading);
+    const user = useAppSelector(state => state.users.user);
 
     useEffect(() => {
         if (id) {
@@ -18,6 +19,12 @@ const AlbumDetailPage = () => {
     }, [dispatch, id]);
 
     const sortedTracks = [...tracks].sort((a, b) => a.number - b.number);
+
+    const handlePlay = (trackId: string) => {
+        if (!user) return;
+        dispatch(addTrackHistory({ trackId, token: user.token }));
+        alert('Playing track: ' + trackId);
+    };
 
     return (
         <Box sx={{ padding: 2 }}>
@@ -29,7 +36,7 @@ const AlbumDetailPage = () => {
                 <Typography>Loading...</Typography>
             ) : (
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-                    {sortedTracks.map((track) => (
+                    {sortedTracks.map(track => (
                         <Card key={track._id} sx={{ width: 250 }}>
                             <CardContent>
                                 <Typography variant="subtitle1">
@@ -38,6 +45,16 @@ const AlbumDetailPage = () => {
                                 <Typography variant="body2" color="text.secondary">
                                     Duration: {track.duration}
                                 </Typography>
+                                {user && (
+                                    <Button
+                                        variant="contained"
+                                        size="small"
+                                        sx={{ mt: 1 }}
+                                        onClick={() => handlePlay(track._id)}
+                                    >
+                                        Play
+                                    </Button>
+                                )}
                             </CardContent>
                         </Card>
                     ))}
@@ -47,4 +64,4 @@ const AlbumDetailPage = () => {
     );
 };
 
-export default AlbumDetailPage;
+export default TracksPage;

@@ -1,74 +1,82 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
 
 interface User {
-    _id: string
-    username: string
-    token: string
+    _id: string;
+    username: string;
+    token: string;
 }
 
-interface LoginMutation {
-    username: string
-    password: string
+interface UserState {
+    user: User | null;
+    loginError: { error: string } | null;
+    registerError: { error: string } | null;
+    loading: boolean;
 }
 
-interface GlobalError {
-    error: string
-}
-
-interface UsersState {
-    user: User | null
-    loginLoading: boolean
-    loginError: GlobalError | null
-}
-
-const initialState: UsersState = {
+const initialState: UserState = {
     user: null,
-    loginLoading: false,
     loginError: null,
-}
+    registerError: null,
+    loading: false,
+};
 
-export const login = createAsyncThunk<
-    User,
-    LoginMutation,
-    { rejectValue: GlobalError }
->(
+export const login = createAsyncThunk(
     'users/login',
-    async (loginData, { rejectWithValue }) => {
-        try {
-            const response = await axios.post(
-                'http://localhost:8000/users/sessions',
-                loginData
-            )
-            return response.data.user
-        } catch (e: any) {
-            if (e.response && e.response.status === 400) {
-                return rejectWithValue(e.response.data)
-            }
-            throw e
-        }
+    async ({ username, password }: { username: string; password: string }) => {
+        const response = await axios.post('http://localhost:8000/users/sessions', { username, password });
+        return response.data;
     }
-)
+);
+
+export const register = createAsyncThunk(
+    'users/register',
+    async ({ username, password }: { username: string; password: string }) => {
+        const response = await axios.post('http://localhost:8000/users/', { username, password });
+        return response.data;
+    }
+);
 
 const usersSlice = createSlice({
     name: 'users',
     initialState,
-    reducers: {},
-    extraReducers: (builder) => {
+    reducers: {
+        logout(state) {
+            state.user = null;
+            state.loginError = null;
+            state.registerError = null;
+        },
+    },
+    extraReducers: builder => {
         builder
-            .addCase(login.pending, (state) => {
-                state.loginLoading = true
-                state.loginError = null
+            // login
+            .addCase(login.pending, state => {
+                state.loading = true;
+                state.loginError = null;
             })
             .addCase(login.fulfilled, (state, action) => {
-                state.loginLoading = false
-                state.user = action.payload
+                state.loading = false;
+                state.user = action.payload.user;
             })
             .addCase(login.rejected, (state, action) => {
-                state.loginLoading = false
-                state.loginError = action.payload || null
+                state.loading = false;
+                state.loginError = action.error as any;
             })
+            // register
+            .addCase(register.pending, state => {
+                state.loading = true;
+                state.registerError = null;
+            })
+            .addCase(register.fulfilled, (state, action) => {
+                state.loading = false;
+                state.user = action.payload;
+            })
+            .addCase(register.rejected, (state, action) => {
+                state.loading = false;
+                state.registerError = action.error as any;
+            });
     },
-})
+});
 
-export default usersSlice.reducer
+export const { logout } = usersSlice.actions;
+export default usersSlice.reducer;
