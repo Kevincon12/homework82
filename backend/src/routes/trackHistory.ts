@@ -29,4 +29,18 @@ trackHistoryRouter.post(
     }
 );
 
+trackHistoryRouter.get("/", auth, async (req: RequestWithUser, res: Response) => {
+        try {
+            const history = await TrackHistory.find({ user: req.user!._id })
+                .populate('track')
+                .sort({ datetime: -1 });
+
+            return res.send(history);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).send({ error: "Server error" });
+        }
+    }
+);
+
 export default trackHistoryRouter;
