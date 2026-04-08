@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import path from "path";
 import multer from "multer";
 import Artist from "../models/Artist";
+import auth from "../middleware/auth";
 
 const router = express.Router();
 
@@ -28,7 +29,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.post("/", upload.single("photo"), async (req, res) => {
+router.post("/", auth, upload.single("photo"), async (req, res) => {
     try {
         const { name, information } = req.body;
         let photo = req.file ? req.file.filename : undefined;

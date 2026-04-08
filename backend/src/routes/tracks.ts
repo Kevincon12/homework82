@@ -1,5 +1,6 @@
 import express from "express";
 import Track from "../models/Track";
+import auth from "../middleware/auth";
 
 const router = express.Router();
 
@@ -18,7 +19,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
     try {
         const { title, album, duration, number } = req.body;
 

@@ -3,6 +3,7 @@ import path from "path";
 import multer from "multer";
 import Album from "../models/Album";
 import type { AlbumWithArtistName } from "../types";
+import auth from "../middleware/auth";
 
 const router = express.Router();
 
@@ -44,7 +45,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-router.post("/", upload.single("cover"), async (req, res) => {
+router.post("/", auth, upload.single("cover"), async (req, res) => {
     try {
         const { title, artist, year } = req.body;
         const cover = req.file ? req.file.filename : undefined;
