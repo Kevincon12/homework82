@@ -5,12 +5,14 @@ export interface IUser {
     username: string;
     password: string;
     token: string;
+    role: string;
 }
 
 export interface UserFields {
     username: string;
     password: string;
     token: string;
+    role: string;
 }
 
 export interface AlbumWithArtistName {
