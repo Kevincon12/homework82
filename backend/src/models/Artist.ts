@@ -10,6 +10,11 @@ const ArtistSchema = new mongoose.Schema({
     },
     information: {
         type: String
+    },
+    isPublished: {
+        type: Boolean,
+        required: true,
+        default: false,
     }
 });
 
