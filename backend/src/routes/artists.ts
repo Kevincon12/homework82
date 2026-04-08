@@ -4,6 +4,7 @@ import path from "path";
 import multer from "multer";
 import Artist from "../models/Artist";
 import auth from "../middleware/auth";
+import permit from "../middleware/permit";
 
 const router = express.Router();
 
@@ -45,6 +46,21 @@ router.post("/", auth, upload.single("photo"), async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).send({ error: "Server error" });
+    }
+});
+
+router.delete("/:id", auth, permit("admin"), async (req, res) => {
+    try {
+        const artist = await Artist.findByIdAndDelete(req.params.id);
+
+        if (!artist) {
+            return res.status(404).send({ error: "Artist not found" });
+        }
+
+        return res.send({ message: "Deleted successfully" });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({ error: "Server error" });
     }
 });
 

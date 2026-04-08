@@ -4,6 +4,7 @@ import multer from "multer";
 import Album from "../models/Album";
 import type { AlbumWithArtistName } from "../types";
 import auth from "../middleware/auth";
+import permit from "../middleware/permit";
 
 const router = express.Router();
 
@@ -85,6 +86,21 @@ router.get("/:id", async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).send({ error: "Server error" });
+    }
+});
+
+router.delete("/:id", auth, permit("admin"), async (req, res) => {
+    try {
+        const album = await Album.findByIdAndDelete(req.params.id);
+
+        if (!album) {
+            return res.status(404).send({ error: "Album not found" });
+        }
+
+        return res.send({ message: "Deleted successfully" });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({ error: "Server error" });
     }
 });
 

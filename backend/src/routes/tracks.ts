@@ -1,6 +1,7 @@
 import express from "express";
 import Track from "../models/Track";
 import auth from "../middleware/auth";
+import permit from "../middleware/permit";
 
 const router = express.Router();
 
@@ -46,6 +47,21 @@ router.get("/:id", async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).send({ error: "Server error" });
+    }
+});
+
+router.delete("/:id", auth, permit("admin"), async (req, res) => {
+    try {
+        const track = await Track.findByIdAndDelete(req.params.id);
+
+        if (!track) {
+            return res.status(404).send({ error: "Track not found" });
+        }
+
+        return res.send({ message: "Deleted successfully" });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({ error: "Server error" });
     }
 });
 
