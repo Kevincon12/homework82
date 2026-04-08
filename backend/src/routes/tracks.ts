@@ -65,4 +65,22 @@ router.delete("/:id", auth, permit("admin"), async (req, res) => {
     }
 });
 
+router.patch("/:id/togglePublished", auth, permit("admin"), async (req, res) => {
+    try {
+        const track = await Track.findById(req.params.id);
+
+        if (!track) {
+            return res.status(404).send({ error: "Track not found" });
+        }
+
+        track.isPublished = !track.isPublished;
+        await track.save();
+
+        return res.send(track);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({ error: "Server error" });
+    }
+});
+
 export default router;

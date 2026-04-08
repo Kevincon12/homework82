@@ -104,4 +104,22 @@ router.delete("/:id", auth, permit("admin"), async (req, res) => {
     }
 });
 
+router.patch("/:id/togglePublished", auth, permit("admin"), async (req, res) => {
+    try {
+        const album = await Album.findById(req.params.id);
+
+        if (!album) {
+            return res.status(404).send({ error: "Album not found" });
+        }
+
+        album.isPublished = !album.isPublished;
+        await album.save();
+
+        return res.send(album);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({ error: "Server error" });
+    }
+});
+
 export default router;

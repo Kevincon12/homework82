@@ -64,4 +64,22 @@ router.delete("/:id", auth, permit("admin"), async (req, res) => {
     }
 });
 
+router.patch("/:id/togglePublished", auth, permit("admin"), async (req, res) => {
+    try {
+        const artist = await Artist.findById(req.params.id);
+
+        if (!artist) {
+            return res.status(404).send({ error: "Artist not found" });
+        }
+
+        artist.isPublished = !artist.isPublished;
+        await artist.save();
+
+        return res.send(artist);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({ error: "Server error" });
+    }
+});
+
 export default router;
