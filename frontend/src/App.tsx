@@ -18,7 +18,7 @@ const App = () => {
             <AppBar position="static">
                 <Toolbar>
                     <Typography variant="h6" sx={{ flexGrow: 1 }}>
-                        My Music App
+                        My Music App (hw89)
                     </Typography>
 
                     <Button color="inherit" component={Link} to="/">
