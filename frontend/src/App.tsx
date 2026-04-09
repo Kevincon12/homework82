@@ -8,6 +8,9 @@ import Register from "./routes/Register";
 import TrackHistoryPage from "./routes/TrackHistoryPage";
 import { useAppSelector, useAppDispatch } from './app/hooks';
 import { logout } from './features/users/usersSlice';
+import AddArtistPage from "./routes/AddArtistPage";
+import AddAlbumPage from "./routes/AddAlbumPage";
+import AddTrackPage from "./routes/AddTrackPage";
 
 const App = () => {
     const user = useAppSelector(state => state.users.user);
@@ -35,6 +38,16 @@ const App = () => {
                                 History
                             </Button>
 
+                            <Button color="inherit" component={Link} to="/add-artist">
+                                Добавить артиста
+                            </Button>
+                            <Button color="inherit" component={Link} to="/add-album">
+                                Добавить альбом
+                            </Button>
+                            <Button color="inherit" component={Link} to="/add-track">
+                                Добавить трек
+                            </Button>
+
                             <Button color="inherit" onClick={() => dispatch(logout())}>
                                 Logout
                             </Button>
@@ -51,6 +64,9 @@ const App = () => {
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/track-history" element={<TrackHistoryPage />} />
+                    <Route path="/add-artist" element={<AddArtistPage />} />
+                    <Route path="/add-album" element={<AddAlbumPage />} />
+                    <Route path="/add-track" element={<AddTrackPage />} />
                 </Routes>
             </Container>
         </>
