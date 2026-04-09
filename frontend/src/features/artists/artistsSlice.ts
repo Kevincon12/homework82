@@ -1,6 +1,6 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
-import type {Artist} from "../../types";
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+import type { Artist } from "../../types";
 
 interface ArtistsState {
     items: Artist[],
@@ -16,6 +16,28 @@ export const fetchArtists = createAsyncThunk(
     'artists/fetchAll',
     async () => {
         const response = await axios.get('http://localhost:8000/artists');
+        return response.data;
+    }
+);
+
+export const deleteArtist = createAsyncThunk(
+    'artists/delete',
+    async ({ id, token }: { id: string; token: string }) => {
+        await axios.delete(`http://localhost:8000/artists/${id}`, {
+            headers: { Authorization: token }
+        });
+        return id;
+    }
+);
+
+export const toggleArtist = createAsyncThunk(
+    'artists/toggle',
+    async ({ id, token }: { id: string; token: string }) => {
+        const response = await axios.patch(
+            `http://localhost:8000/artists/${id}/togglePublished`,
+            {},
+            { headers: { Authorization: token } }
+        );
         return response.data;
     }
 );
@@ -36,7 +58,16 @@ const artistsSlice = createSlice({
             .addCase(fetchArtists.rejected, (state) => {
                 state.loading = false
             })
+            .addCase(deleteArtist.fulfilled, (state, action) => {
+                state.items = state.items.filter(a => a._id !== action.payload);
+            })
+            .addCase(toggleArtist.fulfilled, (state, action) => {
+                const index = state.items.findIndex(a => a._id === action.payload._id);
+                if (index !== -1) {
+                    state.items[index] = action.payload;
+                }
+            })
     },
 });
 
-export default artistsSlice.reducer
+export default artistsSlice.reducer;
