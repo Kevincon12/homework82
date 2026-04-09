@@ -4,6 +4,7 @@ export interface Artist {
     photo: string;
     group: string;
     information?: string;
+    isPublished: boolean;
 }
 
 export interface Album {

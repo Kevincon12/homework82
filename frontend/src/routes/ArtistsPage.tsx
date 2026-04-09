@@ -12,11 +12,17 @@ import { useNavigate } from 'react-router-dom';
 const ArtistsPage = () => {
     const dispatch = useDispatch<AppDispatch>();
     const artists = useSelector((state: RootState) => state.artists.items);
+    const user = useSelector((state: RootState) => state.users.user);
     const navigate = useNavigate();
 
     useEffect(() => {
         dispatch(fetchArtists());
     }, [dispatch]);
+
+    const visibleArtists =
+        user?.role === 'admin'
+            ? artists
+            : artists.filter(artist => artist.isPublished);
 
     return (
         <Box sx={{ padding: 2 }}>
@@ -31,7 +37,7 @@ const ArtistsPage = () => {
                     gap: 2,
                 }}
             >
-                {artists.map((artist) => (
+                {visibleArtists.map((artist) => (
                     <Card
                         key={artist._id}
                         sx={{ width: 250, display: 'flex', flexDirection: 'column', cursor: 'pointer' }}
@@ -49,9 +55,12 @@ const ArtistsPage = () => {
                         />
                         <CardContent>
                             <Typography variant="h6">{artist.name}</Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                {artist.group}
-                            </Typography>
+
+                            {!artist.isPublished && (
+                                <Typography color="error">
+                                    Не опубликовано
+                                </Typography>
+                            )}
                         </CardContent>
                     </Card>
                 ))}
