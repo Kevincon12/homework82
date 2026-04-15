@@ -1,7 +1,7 @@
 import express from "express";
 import User from "../models/User";
-import { randomUUID } from "node:crypto";
 import bcrypt from "bcrypt";
+import { randomUUID } from "node:crypto";
 
 const usersRouter = express.Router();
 
@@ -16,8 +16,8 @@ usersRouter.post("/", async (req, res) => {
         }
 
         const user = new User({
-            username: username,
-            password: password,
+            username,
+            password,
             token: randomUUID(),
         });
 
@@ -35,11 +35,15 @@ usersRouter.post("/sessions", async (req, res) => {
         const { username, password } = req.body;
 
         const user = await User.findOne({ username });
+
         if (!user) {
             return res.status(400).send({ error: "User not found" });
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = user.password
+            ? await bcrypt.compare(password, user.password)
+            : false;
+
         if (!isMatch) {
             return res.status(400).send({ error: "Invalid password" });
         }
@@ -47,7 +51,10 @@ usersRouter.post("/sessions", async (req, res) => {
         user.token = randomUUID();
         await user.save();
 
-        return res.send({ message: "Username and password correct!", user });
+        return res.send({
+            message: "Username and password correct!",
+            user,
+        });
     } catch (error) {
         console.log(error);
         return res.status(500).send({ error: "Server error" });

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import {UserFields} from "../types";
 import bcrypt from "bcrypt";
+import { UserFields } from "../types";
 
 const SALT_WORK_FACTOR = 10;
 
@@ -12,7 +12,7 @@ const UserSchema = new mongoose.Schema<UserFields>({
     },
     password: {
         type: String,
-        required: true,
+        required: false,
     },
     token: {
         type: String,
@@ -21,25 +21,27 @@ const UserSchema = new mongoose.Schema<UserFields>({
     role: {
         type: String,
         required: true,
-        default: 'user',
-        enum: ['user', 'admin'],
-    }
+        default: "user",
+        enum: ["user", "admin"],
+    },
+    googleId: {
+        type: String,
+        required: false,
+    },
 });
 
-UserSchema.pre("save", async function(next) {
-    if (!this.isModified("password")) return;
+UserSchema.pre("save", async function () {
+    if (!this.isModified("password") || !this.password) return;
 
     const salt = await bcrypt.genSalt(SALT_WORK_FACTOR);
-    const hash = await bcrypt.hash(this.password, salt);
-
-    this.password = hash;
+    this.password = await bcrypt.hash(this.password, salt);
 });
 
-UserSchema.set('toJSON', {
-   transform: (_doc, ret, _options) => {
-       const {password, ...rest} = ret;
-       return rest;
-   }
+UserSchema.set("toJSON", {
+    transform: (_doc, ret) => {
+        delete ret.password;
+        return ret;
+    },
 });
 
 const User = mongoose.model("User", UserSchema);

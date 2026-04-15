@@ -3,16 +3,18 @@ import { Request as ExpressRequest } from "express";
 
 export interface IUser {
     username: string;
-    password: string;
+    password?: string;
     token: string;
     role: string;
+    googleId?: string;
 }
 
 export interface UserFields {
     username: string;
-    password: string;
+    password?: string;
     token: string;
     role: string;
+    googleId?: string;
 }
 
 export interface AlbumWithArtistName {
