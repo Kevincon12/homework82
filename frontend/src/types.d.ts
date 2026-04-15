@@ -11,9 +11,10 @@ export interface Album {
     _id: string;
     title: string;
     year: number;
-    cover: string;
+    cover?: string;
     artist: string;
     artistName?: string;
+    isPublished: boolean;
 }
 
 export interface Track {
@@ -21,4 +22,11 @@ export interface Track {
     title: string;
     duration: string;
     number: number;
+}
+
+export interface IUser {
+    username: string;
+    password: string;
+    token: string;
+    role: string;
 }

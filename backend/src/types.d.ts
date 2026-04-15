@@ -20,6 +20,7 @@ export interface AlbumWithArtistName {
     title: string;
     year: number;
     cover?: string;
+    isPublished: boolean;
     artist: {
         _id: string;
         name: string;

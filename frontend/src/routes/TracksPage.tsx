@@ -13,9 +13,7 @@ const TracksPage = () => {
     const user = useAppSelector(state => state.users.user);
 
     useEffect(() => {
-        if (id) {
-            dispatch(fetchTracksByAlbum(id));
-        }
+        if (id) dispatch(fetchTracksByAlbum(id));
     }, [dispatch, id]);
 
     const sortedTracks = [...tracks].sort((a, b) => a.number - b.number);
@@ -27,34 +25,16 @@ const TracksPage = () => {
     };
 
     return (
-        <Box sx={{ padding: 2 }}>
-            <Typography variant="h4" gutterBottom>
-                Tracks
-            </Typography>
-
-            {loading ? (
-                <Typography>Loading...</Typography>
-            ) : (
+        <Box sx={{ p: 2 }}>
+            <Typography variant="h4" gutterBottom>Tracks</Typography>
+            {loading ? <Typography>Loading...</Typography> : (
                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
                     {sortedTracks.map(track => (
                         <Card key={track._id} sx={{ width: 250 }}>
                             <CardContent>
-                                <Typography variant="subtitle1">
-                                    {track.number}. {track.title}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Duration: {track.duration}
-                                </Typography>
-                                {user && (
-                                    <Button
-                                        variant="contained"
-                                        size="small"
-                                        sx={{ mt: 1 }}
-                                        onClick={() => handlePlay(track._id)}
-                                    >
-                                        Play
-                                    </Button>
-                                )}
+                                <Typography variant="subtitle1">{track.number}. {track.title}</Typography>
+                                <Typography variant="body2" color="text.secondary">Duration: {track.duration}</Typography>
+                                {user && <Button variant="contained" size="small" sx={{ mt: 1 }} onClick={() => handlePlay(track._id)}>Play</Button>}
                             </CardContent>
                         </Card>
                     ))}
