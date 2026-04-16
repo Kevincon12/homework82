@@ -7,6 +7,8 @@ export interface IUser {
     token: string;
     role: string;
     googleId?: string;
+    displayName: string;
+    avatar?: string;
 }
 
 export interface UserFields {
@@ -15,6 +17,8 @@ export interface UserFields {
     token: string;
     role: string;
     googleId?: string;
+    displayName: string;
+    avatar?: string;
 }
 
 export interface AlbumWithArtistName {

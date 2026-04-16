@@ -6,6 +6,8 @@ interface User {
     username: string;
     token: string;
     role: string;
+    displayName: string;
+    avatar?: string;
 }
 
 interface UserState {
@@ -35,11 +37,8 @@ export const login = createAsyncThunk(
 
 export const register = createAsyncThunk(
     'users/register',
-    async ({ username, password }: { username: string; password: string }) => {
-        const response = await axios.post('http://localhost:8000/users/', {
-            username,
-            password,
-        });
+    async (data: { username: string; password: string; displayName: string; avatar?: string }) => {
+        const response = await axios.post('http://localhost:8000/users/', data);
         return response.data;
     }
 );
@@ -61,38 +60,16 @@ const usersSlice = createSlice({
     reducers: {
         logout(state) {
             state.user = null;
-            state.loginError = null;
-            state.registerError = null;
         },
     },
     extraReducers: builder => {
         builder
-            .addCase(login.pending, state => {
-                state.loading = true;
-                state.loginError = null;
-            })
             .addCase(login.fulfilled, (state, action) => {
-                state.loading = false;
                 state.user = action.payload.user;
             })
-            .addCase(login.rejected, (state, action) => {
-                state.loading = false;
-                state.loginError = action.error as any;
-            })
-
-            .addCase(register.pending, state => {
-                state.loading = true;
-                state.registerError = null;
-            })
             .addCase(register.fulfilled, (state, action) => {
-                state.loading = false;
                 state.user = action.payload;
             })
-            .addCase(register.rejected, (state, action) => {
-                state.loading = false;
-                state.registerError = action.error as any;
-            })
-
             .addCase(googleLogin.fulfilled, (state, action) => {
                 state.user = action.payload.user;
             });

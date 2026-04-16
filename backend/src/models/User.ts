@@ -28,6 +28,13 @@ const UserSchema = new mongoose.Schema<UserFields>({
         type: String,
         required: false,
     },
+    displayName: {
+        type: String,
+        required: true,
+    },
+    avatar: {
+        type: String,
+    },
 });
 
 UserSchema.pre("save", async function () {

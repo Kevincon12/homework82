@@ -10,7 +10,7 @@ const client = new OAuth2Client(process.env.CLIENT_ID);
 
 usersRouter.post("/", async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const { username, password, displayName } = req.body;
 
         const existingUser = await User.findOne({ username });
 
@@ -21,6 +21,8 @@ usersRouter.post("/", async (req, res) => {
         const user = new User({
             username,
             password,
+            displayName,
+            avatar: req.body.avatar || "",
             token: randomUUID(),
         });
 
@@ -81,6 +83,8 @@ usersRouter.post("/google", async (req, res) => {
 
         const email = payload.email!;
         const googleId = payload.sub!;
+        const displayName = payload.name!;
+        const avatar = payload.picture!;
 
         let user = await User.findOne({ username: email });
 
@@ -89,6 +93,8 @@ usersRouter.post("/google", async (req, res) => {
                 username: email,
                 password: null,
                 googleId,
+                displayName,
+                avatar,
                 token: randomUUID(),
             });
 
@@ -100,7 +106,6 @@ usersRouter.post("/google", async (req, res) => {
 
         return res.send({
             user,
-            message: "Google login success",
         });
     } catch (error) {
         console.log(error);

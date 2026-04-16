@@ -48,6 +48,24 @@ const App = () => {
                                 Добавить трек
                             </Button>
 
+                            {/* 👇 ВОТ ЧТО ДОБАВИЛИ */}
+                            <Typography sx={{ mx: 2 }}>
+                                {user.displayName}
+                            </Typography>
+
+                            {user.avatar && (
+                                <img
+                                    src={user.avatar}
+                                    alt="avatar"
+                                    style={{
+                                        width: 36,
+                                        height: 36,
+                                        borderRadius: '50%',
+                                        marginRight: 10
+                                    }}
+                                />
+                            )}
+
                             <Button color="inherit" onClick={() => dispatch(logout())}>
                                 Logout
                             </Button>

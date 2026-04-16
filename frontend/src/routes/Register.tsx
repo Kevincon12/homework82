@@ -1,17 +1,18 @@
 import { useState } from 'react';
 import { TextField, Button, Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { useAppDispatch } from '../app/hooks';
 import { register } from '../features/users/usersSlice';
 
 const Register = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    const error = useAppSelector(state => state.users.registerError);
 
     const [state, setState] = useState({
         username: '',
         password: '',
+        displayName: '',
+        avatar: '',
     });
 
     const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,42 +22,21 @@ const Register = () => {
 
     const submitHandler = async (e: React.FormEvent) => {
         e.preventDefault();
-        try {
-            await dispatch(register(state)).unwrap();
-            navigate('/login');
-        } catch (err) {
-            console.log(err);
-        }
+        await dispatch(register(state)).unwrap();
+        navigate('/');
     };
 
     return (
         <Box sx={{ maxWidth: 400, margin: '0 auto', mt: 5 }}>
-            <Typography variant="h5" mb={2}>Register</Typography>
-
-            {error && (
-                <Typography color="error">{error.error}</Typography>
-            )}
+            <Typography variant="h5">Register</Typography>
 
             <Box component="form" onSubmit={submitHandler}>
-                <TextField
-                    fullWidth
-                    label="Username"
-                    name="username"
-                    value={state.username}
-                    onChange={inputChangeHandler}
-                    margin="normal"
-                />
-                <TextField
-                    fullWidth
-                    label="Password"
-                    name="password"
-                    type="password"
-                    value={state.password}
-                    onChange={inputChangeHandler}
-                    margin="normal"
-                />
+                <TextField fullWidth label="Username" name="username" onChange={inputChangeHandler} margin="normal" />
+                <TextField fullWidth label="Password" name="password" type="password" onChange={inputChangeHandler} margin="normal" />
+                <TextField fullWidth label="Display Name" name="displayName" onChange={inputChangeHandler} margin="normal" />
+                <TextField fullWidth label="Avatar URL" name="avatar" onChange={inputChangeHandler} margin="normal" />
 
-                <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
+                <Button type="submit" fullWidth variant="contained" sx={{ mt: 2 }}>
                     Sign Up
                 </Button>
             </Box>
