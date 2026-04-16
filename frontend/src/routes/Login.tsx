@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { TextField, Button, Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { login } from "../features/users/usersSlice";
+import { login, googleLogin } from "../features/users/usersSlice";
 import { useAppDispatch, useAppSelector } from '../app/hooks';
+import { GoogleLogin } from '@react-oauth/google';
 
 const Login = () => {
     const dispatch = useAppDispatch();
@@ -62,9 +63,21 @@ const Login = () => {
                 </Button>
             </Box>
 
+            <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+                <GoogleLogin
+                    onSuccess={(credentialResponse) => {
+                        if (credentialResponse.credential) {
+                            dispatch(googleLogin(credentialResponse.credential));
+                            navigate('/');
+                        }
+                    }}
+                    onError={() => console.log('Google Login Error')}
+                />
+            </Box>
+
             <Button
                 fullWidth
-                sx={{ mt: 1 }}
+                sx={{ mt: 2 }}
                 onClick={() => navigate('/register')}
             >
                 Register

@@ -25,7 +25,10 @@ const initialState: UserState = {
 export const login = createAsyncThunk(
     'users/login',
     async ({ username, password }: { username: string; password: string }) => {
-        const response = await axios.post('http://localhost:8000/users/sessions', { username, password });
+        const response = await axios.post('http://localhost:8000/users/sessions', {
+            username,
+            password,
+        });
         return response.data;
     }
 );
@@ -33,7 +36,21 @@ export const login = createAsyncThunk(
 export const register = createAsyncThunk(
     'users/register',
     async ({ username, password }: { username: string; password: string }) => {
-        const response = await axios.post('http://localhost:8000/users/', { username, password });
+        const response = await axios.post('http://localhost:8000/users/', {
+            username,
+            password,
+        });
+        return response.data;
+    }
+);
+
+export const googleLogin = createAsyncThunk(
+    'users/googleLogin',
+    async (credential: string) => {
+        const response = await axios.post('http://localhost:8000/users/google', {
+            credential,
+        });
+
         return response.data;
     }
 );
@@ -50,7 +67,6 @@ const usersSlice = createSlice({
     },
     extraReducers: builder => {
         builder
-            // login
             .addCase(login.pending, state => {
                 state.loading = true;
                 state.loginError = null;
@@ -63,7 +79,7 @@ const usersSlice = createSlice({
                 state.loading = false;
                 state.loginError = action.error as any;
             })
-            // register
+
             .addCase(register.pending, state => {
                 state.loading = true;
                 state.registerError = null;
@@ -75,6 +91,10 @@ const usersSlice = createSlice({
             .addCase(register.rejected, (state, action) => {
                 state.loading = false;
                 state.registerError = action.error as any;
+            })
+
+            .addCase(googleLogin.fulfilled, (state, action) => {
+                state.user = action.payload.user;
             });
     },
 });
